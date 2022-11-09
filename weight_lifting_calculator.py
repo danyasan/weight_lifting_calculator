@@ -113,6 +113,9 @@ def workout_calculator(workweight):
         print(weights_for_target(warmup))
 
 
+print(workout_calculator(45))
+print(workout_calculator(135))
+
 # import pytest
 
 # def test_weights_each_side():
