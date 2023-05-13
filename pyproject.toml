@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "wlc"
+version = "0.1.0"
+description = "Determine which plates to put on your barbell to reach a target weight."
+authors = ["Daniel Young <danielyoung@hey.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
