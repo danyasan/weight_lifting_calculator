@@ -18,10 +18,26 @@ Hard-coded at the moment.
 
 ## Commmands to Run
 
-To Do. 
+`workout_calculator(<desired weight, in lbs>)`
 
-Create a `main.py` file and refactor the code.
+# Future Work
 
-## Textual Interface
+Jot down ideas for this project in the future.
 
-Use this project as an excuse to test out Textual.
+## Refactor
+
+Create a `main.py` file and refactor the code into a more package-like format.
+
+### The Plan
+
+Create source folder for logic.
+Create separate file for holding weight list, as YAML or something like that.
+Make more like an interactive tool, where you type a command and it returns to you the weights to use. 
+
+## Add tests
+
+Probably use pytest.
+
+## Textual TUI
+
+Use this project as an excuse to test out [Textual](https://pypi.org/project/textual/).

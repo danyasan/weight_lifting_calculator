@@ -1,9 +1,6 @@
-"""Weight Lifting Calculator
+from itertools import combinations
 
-Determine which weights to put on the bar to reach a certain total weight.
 
-Uses a list of available weights in your home gym.
-"""
 # Weights, in lbs. Put one value for each pair of weights.
 WEIGHTS = [
     5,
@@ -11,61 +8,56 @@ WEIGHTS = [
     10,
     25,
     35,
+    45,
 ]
 
-BARBELL = 15 # lbs
+BARBELL = 45 # lbs
 
 
-def weights_each_side(target):
-    """Return a list of the weights to place on each side of the bar to reach the target weight."""
-    if target % 5 != 0:
-        print(f"Can't split {target} lbs evenly! Try a number divisible by 5.")
-    elif target < BARBELL:
-        print(f"The barbell weighs {BARBELL} lbs, more than you're trying to lift!")
-    else:
-        side = (target - BARBELL)/2
-        return side
-
-print(weights_each_side(135))
-print(weights_each_side(137))
-print(weights_each_side(30))
+def weight_per_side(target: int|float) -> int|float:
+    """Return how mmuch weight to place on each side of the bar to reach the target weight."""
+    if target < BARBELL:
+        raise ValueError(f"The barbell weighs {BARBELL} lbs, more than you're trying to lift!")
+    weight_one_side = (target - BARBELL)/2
+    return weight_one_side
 
 
-def weight_on_bar(total):
+def weight_on_bar(weight_one_side: int|float) -> int|float:
     """Calculate the total weight being lifted from the sum of weights on one side of the bar."""
-    return total*2 + BARBELL
-
-print(weight_on_bar(45))
+    return weight_one_side*2 + BARBELL
 
 
-from itertools import combinations
-
-def weights_for_side(target):
+def solve_weights_for_side(target: int|float) -> list[tuple]:
     """
-    Given a total weight for one side of the bar, return a list of tuples that
-    total the desired weight.
+    Given the weight needed on each side of the barbell, `weight_one_side`, and
+    the weight collection, return a list of tuples that will reach the desired weight.
+
+    e.g., to hit target of 45 lbs, could be achieved with:
+    * (45,)
+    * (35, 10)
+    * (25, 10, 10)
+    * etc.
     """
+    if target < BARBELL:
+        raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
     if target == BARBELL:
         return [(0,)]
     solutions = []
-    for n in range(len(WEIGHTS)+1):
+    for n in range(len(WEIGHTS) + 1):
         combos = combinations(WEIGHTS, n)
         for i in list(combos):
             if sum(i) == target and i not in solutions:
                 solutions.append(i)
     return solutions
 
-print(weights_for_side(45))
-print(weights_for_side(70))
-print(weights_for_side(15))
 
-
+# TODO continue refactoring here
 def weights_for_target(target):
     """
     Given a target mass to lift, return the available weight combinations to get to that mass.
     """
-    side = weights_each_side(target)
-    solutions = weights_for_side(side)
+    side = weight_per_side(target)
+    solutions = solve_weights_for_side(side)
     if solutions:
         return solutions
     else:
@@ -120,5 +112,5 @@ print(workout_calculator(135))
 
 # import pytest
 
-# def test_weights_each_side():
-#     assert weights_each_side(135) == 45
+# def test_weight_per_side():
+#     assert weight_per_side(135) == 45
