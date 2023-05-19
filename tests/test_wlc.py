@@ -1,6 +1,6 @@
 import pytest
 
-from ..wlc.wlc import weight_per_side, weight_on_bar, solve_weights_for_side
+from wlc.wlc import weight_per_side, weight_on_bar, solve_weights_for_side
 
 
 @pytest.fixture

@@ -38,10 +38,10 @@ def solve_weights_for_side(target: int|float) -> list[tuple]:
     * (25, 10, 10)
     * etc.
     """
-    if target < BARBELL:
-        raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
-    if target == BARBELL:
-        return [(0,)]
+    # if target < BARBELL:
+    #     raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
+    # if target == BARBELL:
+    #     return [(0,)]
     solutions = []
     for n in range(len(WEIGHTS) + 1):
         combos = combinations(WEIGHTS, n)
@@ -63,11 +63,6 @@ def weights_for_target(target):
     else:
         print(f"Can't make {side} lbs on each side with current weights!")
 
-print(weights_for_target(105))
-print(weights_for_target(50))
-print(weights_for_target(45))
-print(weights_for_target(15))
-
 
 def find_warmups(workweight):
     """
@@ -81,6 +76,7 @@ def find_warmups(workweight):
     Workset: 3 sets of 5
     """
     diff = workweight - BARBELL
+    # TODO make calcs round to nearest 5 or 10 for higher likelihood of finding a plate match.
     spacing = diff / 4
     warmups = [
         BARBELL,
@@ -91,10 +87,6 @@ def find_warmups(workweight):
     ]
     return warmups
 
-print("Find warmups for 105 and 45:")
-print(find_warmups(105))
-print(find_warmups(45))
-
 
 def workout_calculator(workweight):
     """
@@ -104,13 +96,3 @@ def workout_calculator(workweight):
     for warmup in warmup_weights:
         print(warmup)
         print(weights_for_target(warmup))
-
-
-print("Find workset, including warmups, for 45 and 135:")
-print(workout_calculator(45))
-print(workout_calculator(135))
-
-# import pytest
-
-# def test_weight_per_side():
-#     assert weight_per_side(135) == 45
