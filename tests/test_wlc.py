@@ -1,6 +1,6 @@
 import pytest
 
-from wlc.wlc import weight_per_side, weight_on_bar, solve_weights_for_side
+from wlc.wlc import weight_per_side, weight_on_bar, solve_weight_per_side
 
 
 @pytest.fixture
@@ -23,17 +23,16 @@ def test_weight_on_bar():
     assert weight_on_bar(45) == expected
 
 
-def test_solve_weights_for_side_empty():
+def test_solve_weight_for_side_empty():
     expected = []
-    assert solve_weights_for_side(1) == expected
+    assert solve_weight_per_side(1) == expected
 
 
-def test_solve_weights_for_side_zero():
-    expected = [(0,)]
-    assert solve_weights_for_side(BARBELL) == expected
+def test_solve_weight_per_side_10():
+    expected = [(10,)]
+    assert solve_weight_per_side(10) == expected
 
 
-def test_solve_weights_for_side_10():
-    expected = [(10,), (5, 5)]
-    assert solve_weights_for_side(10) == expected
-
+def test_solve_weight_per_side_45():
+    expected = [(45,), (10, 35), (10, 10, 25)]
+    assert solve_weight_per_side(45) == expected

@@ -27,7 +27,7 @@ def weight_on_bar(weight_one_side: int|float) -> int|float:
     return weight_one_side*2 + BARBELL
 
 
-def solve_weights_for_side(target: int|float) -> list[tuple]:
+def solve_weight_per_side(target: int|float) -> list[tuple]:
     """
     Given the weight needed on each side of the barbell, `weight_one_side`, and
     the weight collection, return a list of tuples that will reach the desired weight.
@@ -38,16 +38,13 @@ def solve_weights_for_side(target: int|float) -> list[tuple]:
     * (25, 10, 10)
     * etc.
     """
-    # if target < BARBELL:
-    #     raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
-    # if target == BARBELL:
-    #     return [(0,)]
     solutions = []
     for n in range(len(WEIGHTS) + 1):
         combos = combinations(WEIGHTS, n)
         for i in list(combos):
             if sum(i) == target and i not in solutions:
                 solutions.append(i)
+    # TODO add step to remove duplicates in `solutions`
     return solutions
 
 
@@ -56,8 +53,12 @@ def weights_for_target(target):
     """
     Given a target mass to lift, return the available weight combinations to get to that mass.
     """
+    # if target < BARBELL:
+    #     raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
+    # if target == BARBELL:
+    #     return [(0,)]
     side = weight_per_side(target)
-    solutions = solve_weights_for_side(side)
+    solutions = solve_weight_per_side(side)
     if solutions:
         return solutions
     else:
