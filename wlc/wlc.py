@@ -11,23 +11,30 @@ WEIGHTS = [
     45,
 ]
 
-BARBELL = 45 # lbs
+BARBELL = 45  # lbs
 
 
-def weight_per_side(target: int|float) -> int|float:
-    """Return how mmuch weight to place on each side of the bar to reach the target weight."""
+def weight_per_side(target: int | float) -> int | float:
+    """
+    Return how much weight to place on each side of the bar to reach the target weight.
+    """
     if target < BARBELL:
-        raise ValueError(f"The barbell weighs {BARBELL} lbs, more than you're trying to lift!")
-    weight_one_side = (target - BARBELL)/2
+        raise ValueError(
+            f"The barbell weighs {BARBELL} lbs, more than you're trying to lift!"
+        )
+    weight_one_side = (target - BARBELL) / 2
     return weight_one_side
 
 
-def weight_on_bar(weight_one_side: int|float) -> int|float:
-    """Calculate the total weight being lifted from the sum of weights on one side of the bar."""
-    return weight_one_side*2 + BARBELL
+def weight_on_bar(weight_one_side: int | float) -> int | float:
+    """
+    Calculate the total weight being lifted from the sum of weights on
+    one side of the bar.
+    """
+    return weight_one_side * 2 + BARBELL
 
 
-def solve_weight_per_side(target: int|float) -> list[tuple]:
+def solve_weight_per_side(target: int | float) -> list[tuple]:
     """
     Given the weight needed on each side of the barbell, `weight_one_side`, and
     the weight collection, return a list of tuples that will reach the desired weight.
@@ -51,7 +58,8 @@ def solve_weight_per_side(target: int|float) -> list[tuple]:
 # TODO continue refactoring here
 def weights_for_target(target):
     """
-    Given a target mass to lift, return the available weight combinations to get to that mass.
+    Given a target mass to lift, return the available weight combinations
+    to get to that mass.
     """
     # if target < BARBELL:
     #     raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
@@ -67,7 +75,8 @@ def weights_for_target(target):
 
 def find_warmups(workweight):
     """
-    Given the workweight, return a list of relatively evenly spaced masses down to the barbell.
+    Given the workweight, return a list of relatively evenly spaced masses
+    down to the barbell.
 
     Assumes the warm-ups consist of:
     3 sets of 5
@@ -82,16 +91,17 @@ def find_warmups(workweight):
     warmups = [
         BARBELL,
         BARBELL + spacing,
-        BARBELL + 2*spacing,
-        BARBELL + 3*spacing,
-        workweight
+        BARBELL + 2 * spacing,
+        BARBELL + 3 * spacing,
+        workweight,
     ]
     return warmups
 
 
 def workout_calculator(workweight):
     """
-    Given a workweight, return which plates to put on each side for each warmup set and the workset.
+    Given a workweight, return which plates to put on each side for each
+    warmup set and the workset.
     """
     warmup_weights = find_warmups(workweight)
     for warmup in warmup_weights:
