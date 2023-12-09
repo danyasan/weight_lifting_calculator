@@ -1,8 +1,9 @@
-from wlc.wlc import workout_calculator
+from wlc.wlc import get_full_workout_solution
 
 
 def main():
-    print(workout_calculator(135))
+    print(get_full_workout_solution(155))
+
 
 if __name__ == "__main__":
     main()

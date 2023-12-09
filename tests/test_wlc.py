@@ -1,6 +1,8 @@
 import pytest
 
-from wlc.wlc import weight_per_side, weight_on_bar, solve_weight_per_side
+from wlc.wlc import (
+    weight_per_side,
+    weight_being_lifted, solve_weight_per_side, round_to_5)
 
 
 @pytest.fixture
@@ -20,7 +22,7 @@ def test_weight_per_side():
 
 def test_weight_on_bar():
     expected = 135
-    assert weight_on_bar(45) == expected
+    assert weight_being_lifted(45) == expected
 
 
 def test_solve_weight_for_side_empty():
@@ -36,3 +38,19 @@ def test_solve_weight_per_side_10():
 def test_solve_weight_per_side_45():
     expected = [(45,), (10, 35), (10, 10, 25)]
     assert solve_weight_per_side(45) == expected
+
+
+@pytest.mark.parametrize(
+    "mass, expected",
+    [
+        (45, 45),
+        (0, 0),
+        (42.5, 45),
+        (47.5, 50),
+        (140, 140),
+        (142, 140),
+        (143, 145),
+    ]
+)
+def test_round_to_5(mass, expected):
+    assert round_to_5(mass) == expected

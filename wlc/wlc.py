@@ -14,19 +14,21 @@ WEIGHTS = [
 BARBELL = 45  # lbs
 
 
-def weight_per_side(target: int | float) -> int | float:
+def weight_per_side(target: float) -> float:
     """
-    Return how much weight to place on each side of the bar to reach the target weight.
+    Return how much weight to place on each side of the bar to reach the target
+    weight.
     """
     if target < BARBELL:
         raise ValueError(
-            f"The barbell weighs {BARBELL} lbs, more than you're trying to lift!"
+            f"The barbell weighs {BARBELL} lbs, "
+            f"{BARBELL - target} lbs more than you're trying to lift!"
         )
     weight_one_side = (target - BARBELL) / 2
     return weight_one_side
 
 
-def weight_on_bar(weight_one_side: int | float) -> int | float:
+def weight_being_lifted(weight_one_side: float) -> float:
     """
     Calculate the total weight being lifted from the sum of weights on
     one side of the bar.
@@ -34,13 +36,15 @@ def weight_on_bar(weight_one_side: int | float) -> int | float:
     return weight_one_side * 2 + BARBELL
 
 
-def solve_weight_per_side(target: int | float) -> list[tuple]:
+def solve_weight_per_side(side_weight: float) -> list[tuple[float]]:
     """
-    Given the weight needed on each side of the barbell, `weight_one_side`, and
-    the weight collection, return a list of tuples that will reach the desired weight.
+    Given the target plate weight (mass on one side of the barbell) and the
+    weight collection, WEIGHT, return a list of tuples containing the plate
+    weights from the collection that will result in the desired weight.
 
-    e.g., to hit target of 45 lbs, could be achieved with:
-    * (45,)
+    For example, to hit 45 lbs, the following combinations of plate weights
+    could be used:
+    * (45, )
     * (35, 10)
     * (25, 10, 10)
     * etc.
@@ -49,61 +53,85 @@ def solve_weight_per_side(target: int | float) -> list[tuple]:
     for n in range(len(WEIGHTS) + 1):
         combos = combinations(WEIGHTS, n)
         for i in list(combos):
-            if sum(i) == target and i not in solutions:
+            if sum(i) == side_weight and i not in solutions:
                 solutions.append(i)
-    # TODO add step to remove duplicates in `solutions`
     return solutions
 
 
-# TODO continue refactoring here
-def weights_for_target(target):
+def solve_weight_per_side_fuzzy(side_weight: float) -> list[tuple[float]]:
+    """
+    If no solution is found, try looking slightly above or below the target to
+    find a solution.
+    """
+    # TODO implement some way of letting user know this got rounded.
+    rounded_weight = round_to_5(side_weight)
+    solutions = solve_weight_per_side(rounded_weight)
+
+    if not solutions:
+        raise ValueError(
+            f"Can't make {side_weight} lbs on each side with "
+            f"current plate collection!"
+        )
+    return solutions
+
+
+def weights_for_target(target: float) -> list[tuple[float]]:
     """
     Given a target mass to lift, return the available weight combinations
-    to get to that mass.
+    to put on one side of the bar to reach that target mass.
+
+    For example, to lift 135 lbs total with a 45 lbs barbell, 45 lbs should
+    be used on each side. This function will return the different plate
+    combinations to use, limited to plates from the weight collection.
     """
-    # if target < BARBELL:
-    #     raise ValueError(f"The barbell ({BARBELL} lbs) weighs more than the target weight!")
-    # if target == BARBELL:
-    #     return [(0,)]
-    side = weight_per_side(target)
-    solutions = solve_weight_per_side(side)
-    if solutions:
-        return solutions
-    else:
-        print(f"Can't make {side} lbs on each side with current weights!")
+    side_weight = weight_per_side(target)
+    solutions = solve_weight_per_side(side_weight)
+    if not solutions:
+        solutions = solve_weight_per_side_fuzzy(side_weight)
+    return solutions
 
 
-def find_warmups(workweight):
+def round_to_5(mass: float) -> float:
+    remainder = mass % 5
+    if remainder == 0:
+        return mass
+    elif remainder < 2.5:
+        return mass - remainder
+    elif remainder >= 2.5:
+        return mass + (5 - remainder)
+
+
+def find_warmup_weights(target: float) -> list[float]:
     """
-    Given the workweight, return a list of relatively evenly spaced masses
-    down to the barbell.
+    Given the target mass to lift, return a list of plate combinations
+    to work through up to the target mass. First set is the empty barbell.
+    Does not include the target mass.
 
     Assumes the warm-ups consist of:
     3 sets of 5
     1 set of 5
     1 set of 3
     1 set of 1
-    Workset: 3 sets of 5
+    3 sets of 5 (work set; excluded)
     """
-    diff = workweight - BARBELL
-    # TODO make calcs round to nearest 5 or 10 for higher likelihood of finding a plate match.
-    spacing = diff / 4
-    warmups = [
+    delta = target - BARBELL
+    spacing = delta / 4
+    return [
         BARBELL,
-        BARBELL + spacing,
-        BARBELL + 2 * spacing,
-        BARBELL + 3 * spacing,
-        workweight,
+        round_to_5(BARBELL + spacing),
+        round_to_5(BARBELL + 2 * spacing),
+        round_to_5(BARBELL + 3 * spacing),
     ]
-    return warmups
 
 
-def workout_calculator(workweight):
+def get_full_workout_solution(target: float) -> list[tuple[float]]:
     """
-    Given a workweight, return which plates to put on each side for each
-    warmup set and the workset.
+    Given a target mass, return which plates to put on each side of the barbell
+    for each warmup set and the work set.
+
+    For simplicity, just provides the first solution for each warmup set.
     """
-    warmup_weights = find_warmups(workweight)
-    for warmup in warmup_weights:
-        print(warmup)
-        print(weights_for_target(warmup))
+    workout = find_warmup_weights(target)
+    workout.append(target)
+    workout_combos = [weights_for_target(mass)[0] for mass in workout]
+    return workout_combos
