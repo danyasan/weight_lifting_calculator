@@ -2,7 +2,10 @@ import pytest
 
 from wlc.wlc import (
     weight_per_side,
-    weight_being_lifted, solve_weight_per_side, round_to_5)
+    weight_being_lifted,
+    solve_weight_per_side,
+    round_to_5,
+)
 
 
 @pytest.fixture
@@ -50,7 +53,7 @@ def test_solve_weight_per_side_45():
         (140, 140),
         (142, 140),
         (143, 145),
-    ]
+    ],
 )
 def test_round_to_5(mass, expected):
     assert round_to_5(mass) == expected
